@@ -177,8 +177,8 @@ def show_standings(tournament_id):
         team_scores[round_id][match.team2_id]['points_scored'] += match.team2_score
         team_scores[round_id][match.team2_id]['points_lost'] += match.team1_score
         
-        # Track match and determine winner
-        if match.team1_score == 0 and match.team2_score == 0:
+        # Only skip if it's a normal unplayed match. If it's a walkover, it counts even if scores are 0-0!
+        if match.result_type == 'normal' and match.team1_score == 0 and match.team2_score == 0:
             print("Match not played yet")
             continue
             
