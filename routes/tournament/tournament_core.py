@@ -306,6 +306,7 @@ def show_overall_standings(tournament_id):
             m.id as match_id,
             m.team1_id,
             m.team2_id,
+            m.result_type,
             s1.team_id as team1_id,
             s1.score as team1_score,
             s2.team_id as team2_id,
@@ -343,7 +344,7 @@ def show_overall_standings(tournament_id):
         print(f"Team2 ({match.team2_id}): {match.team2_score}")
         
         # Skip unplayed matches
-        if match.team1_score == 0 and match.team2_score == 0:
+        if getattr(match, 'result_type', 'normal') == 'normal' and match.team1_score == 0 and match.team2_score == 0:
             print("Match not played yet")
             continue
         
