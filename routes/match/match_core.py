@@ -3,7 +3,6 @@ from models import db, Match
 from routes.score.score_core import update_successor_match  # handles knockout progression
 
 
-
 from flask import request, jsonify
 from models import Match, Team, Player, Tournament, Score, db, SuperTournament
 from sqlalchemy import or_
