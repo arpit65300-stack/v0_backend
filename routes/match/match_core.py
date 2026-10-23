@@ -2,42 +2,6 @@ from flask import Blueprint, request, jsonify
 from models import db, Match
 from routes.score.score_core import update_successor_match  # handles knockout progression
 
-@match_bp.route('/walkover', methods=['POST'])
-def declare_walkover():
-    data = request.get_json()
-    match_id = data.get('match_id')
-    winner_team_id = data.get('winner_team_id')
-
-    match = Match.query.get(match_id)
-    if not match:
-        return jsonify({'error': 'Match not found'}), 404
-
-    # Ensure the chosen winner is actually playing in this match
-    if winner_team_id not in [match.team1_id, match.team2_id]:
-        return jsonify({'error': 'Selected winner is not part of this match'}), 400
-
-    # Mark match as final, completed, and record the walkover
-    match.winner_team_id = winner_team_id
-    match.is_final = True
-    match.status = 'completed'
-    match.result_type = 'walkover'
-
-    db.session.commit()
-
-    # Advance the winner in knockout brackets if a successor match exists
-    try:
-        update_successor_match(match.id, winner_team_id)
-    except Exception as e:
-        # Fallback if helper signature varies
-        pass
-
-    return jsonify({'message': 'Walkover declared successfully', 'match_id': match.id}), 200
-
-
-
-
-
-
 
 
 from flask import request, jsonify
@@ -435,4 +399,40 @@ def player_checkin():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+
+@match_bp.route('/walkover', methods=['POST'])
+def declare_walkover():
+    data = request.get_json()
+    match_id = data.get('match_id')
+    winner_team_id = data.get('winner_team_id')
+
+    match = Match.query.get(match_id)
+    if not match:
+        return jsonify({'error': 'Match not found'}), 404
+
+    # Ensure the chosen winner is actually playing in this match
+    if winner_team_id not in [match.team1_id, match.team2_id]:
+        return jsonify({'error': 'Selected winner is not part of this match'}), 400
+
+    # Mark match as final, completed, and record the walkover
+    match.winner_team_id = winner_team_id
+    match.is_final = True
+    match.status = 'completed'
+    match.result_type = 'walkover'
+
+    db.session.commit()
+
+    # Advance the winner in knockout brackets if a successor match exists
+    try:
+        update_successor_match(match.id, winner_team_id)
+    except Exception as e:
+        # Fallback if helper signature varies
+        pass
+
+    return jsonify({'message': 'Walkover declared successfully', 'match_id': match.id}), 200
+
+
+
+
+
         
