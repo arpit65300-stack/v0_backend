@@ -506,6 +506,7 @@ def show_second_place_standings(tournament_id):
             m.team2_id,
             m.round_id,
             m.pool,
+            m.result_type,
             s1.team_id as team1_id,
             s1.score as team1_score,
             s2.team_id as team2_id,
@@ -555,7 +556,7 @@ def show_second_place_standings(tournament_id):
         pool_scores[pool][match.team2_id]['points_lost'] += match.team1_score
         
         # Track match and determine winner
-        if match.team1_score == 0 and match.team2_score == 0:
+        if getattr(match, 'result_type', 'normal') == 'normal' and match.team1_score == 0 and match.team2_score == 0:
             print("Match not played yet")
             continue
             
