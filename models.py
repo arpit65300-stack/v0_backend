@@ -96,6 +96,7 @@ class Match(db.Model):
     successor = db.Column(db.Integer, db.ForeignKey('match.id'), nullable=True)
     bracket_position = db.Column(db.Integer, nullable=True)
     round_number = db.Column(db.Integer, nullable=True)
+    result_type = db.Column(db.String(20), default='normal', nullable=False) # 'normal' or 'walkover'
 
 class Score(db.Model):
     id = db.Column(db.Integer, primary_key=True)
